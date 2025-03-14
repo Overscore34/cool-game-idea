@@ -1,0 +1,77 @@
+[gd_scene load_steps=9 format=3 uid="uid://dwcouurdm642e"]
+
+[ext_resource type="PackedScene" uid="uid://6g1k87d4w6eq" path="res://player.tscn" id="1_7rgu3"]
+[ext_resource type="Script" path="res://fire_hero.gd" id="1_xatak"]
+[ext_resource type="Texture2D" uid="uid://c101x6km4fs2f" path="res://pixil-frame-0 (2).png" id="2_jaqdw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lp4th"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4cy7r"]
+size = Vector2(1134, 28)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t5yjh"]
+size = Vector2(58, 94.6667)
+
+[sub_resource type="BoxMesh" id="BoxMesh_s4se6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f2hcr"]
+size = Vector2(84, 80)
+
+[node name="world" type="Node2D"]
+
+[node name="floor" type="StaticBody2D" parent="."]
+position = Vector2(576, 618)
+scale = Vector2(1, 1.78)
+collision_layer = 3
+collision_mask = 3
+metadata/_edit_group_ = true
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="floor"]
+scale = Vector2(1134, 29)
+mesh = SubResource("BoxMesh_lp4th")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="floor"]
+shape = SubResource("RectangleShape2D_4cy7r")
+
+[node name="fireHero" type="RigidBody2D" parent="."]
+position = Vector2(421, 213)
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_xatak")
+
+[node name="HeroSprite" type="Sprite2D" parent="fireHero"]
+texture_filter = 1
+scale = Vector2(3, 3)
+texture = ExtResource("2_jaqdw")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="fireHero"]
+position = Vector2(0, 31.6667)
+polygon = PackedVector2Array(-14.6667, 16, 24.3333, 16, 24, -37.6667, 17.6667, -43.6667, 17.6667, -58.6667, 14.6667, -61.6667, 15, -68, 12, -71, -6, -70.3333, -23.6667, -64.6667, -23.6667, -61.3333, -15.3333, -55.6667, -12, 13.3333, -15, 13.3333)
+
+[node name="pickup" type="Area2D" parent="fireHero"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="fireHero/pickup"]
+position = Vector2(1.99997, 3.66667)
+shape = SubResource("RectangleShape2D_t5yjh")
+
+[node name="player" parent="." instance=ExtResource("1_7rgu3")]
+position = Vector2(864, 519)
+scale = Vector2(3, 3)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+modulate = Color(1, 1, 0, 1)
+position = Vector2(216, 506)
+scale = Vector2(-0.984585, 1.20299)
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D"]
+scale = Vector2(83.5, 79.5)
+mesh = SubResource("BoxMesh_s4se6")
+
+[node name="Area2D" type="Area2D" parent="StaticBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/Area2D"]
+shape = SubResource("RectangleShape2D_f2hcr")
+
+[connection signal="body_entered" from="fireHero/pickup" to="fireHero" method="_on_pickup_body_entered"]
+[connection signal="body_entered" from="fireHero/pickup" to="player" method="_on_pickup_body_entered"]
+[connection signal="body_entered" from="StaticBody2D/Area2D" to="player" method="_on_area_2d_body_entered"]
